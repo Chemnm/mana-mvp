@@ -40,4 +40,49 @@ jobs:
 
       - name: Deploy to AWS App Runner
         run: |
-          aws apprunner start-deployment --service-arn ${{ secrets.APP_RUNNER_SERVICE_ARN }}
+          SERVICE_ARN="${{ secrets.APP_RUNNER_SERVICE_ARN }}"
+          MAX_RETRIES=3
+          RETRY_DELAY=15
+
+          # Check initial status
+          STATUS=$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --query 'Service.Status' --output text)
+          echo "Initial App Runner service status: $STATUS"
+
+          # Resume if paused
+          if [ "$STATUS" = "PAUSED" ]; then
+            echo "Service is PAUSED. Resuming service..."
+            aws apprunner resume-service --service-arn "$SERVICE_ARN"
+            aws apprunner wait service-resumed --service-arn "$SERVICE_ARN"
+            echo "Service resumed."
+          elif [ "$STATUS" != "RUNNING" ]; then
+            echo "Service is not in a valid state for deployment (must be RUNNING or PAUSED). Current status is $STATUS."
+            echo "Please check the AWS App Runner console for more details."
+            exit 1
+          fi
+
+          # Attempt deployment with retries
+          for i in $(seq 1 $MAX_RETRIES); do
+            echo "Attempt $i of $MAX_RETRIES: Starting deployment..."
+            # Capture stderr to a variable
+            DEPLOY_ERROR=$(aws apprunner start-deployment --service-arn "$SERVICE_ARN" 2>&1 >/dev/null)
+
+            if [ $? -eq 0 ]; then
+              echo "Deployment started successfully."
+              exit 0
+            else
+              echo "Deployment failed on attempt $i."
+              echo "Error details: $DEPLOY_ERROR"
+              if [[ "$DEPLOY_ERROR" == *"InvalidRequestException"* && "$DEPLOY_ERROR" == *"isn't in RUNNING state"* ]]; then
+                if [ $i -lt $MAX_RETRIES ]; then
+                  echo "Retrying in $RETRY_DELAY seconds..."
+                  sleep $RETRY_DELAY
+                fi
+              else
+                echo "An unexpected error occurred. Halting."
+                exit 1
+              fi
+            fi
+          done
+
+          echo "All deployment attempts failed."
+          exit 1
