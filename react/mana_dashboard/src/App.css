@@ -1,0 +1,107 @@
+:root {
+  --primary: #0dd675;
+  --text: #f8f8f8;
+  --background: #20232a;
+  --card-bg: #282c34;
+}
+
+body.light-mode {
+    --text: #0a0a0a;
+    --background: #ffffff;
+    --card-bg: #f0f0f0;
+}
+
+body.light-mode header.scrolled {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+body.light-mode .hero-overlay {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, var(--background) 90%);
+}
+
+body.light-mode .cta-form {
+    background-color: rgba(240, 240, 240, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .cta-form .btn {
+    background-color: var(--primary);
+    color: #ffffff;
+}
+
+body.light-mode .cta-form .btn:hover {
+    background-color: #0bb565;
+}
+
+body.light-mode .solution {
+    background-color: #f8f8f8;
+}
+
+body.light-mode .impact-stat {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .impact-stat p {
+    color: var(--text);
+}
+
+body.light-mode .section-subtitle {
+    color: var(--text);
+}
+
+body.light-mode footer {
+    background-color: #f8f8f8;
+}
+
+body.light-mode .footer-bottom {
+    border-top: 1px solid #ddd;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  transition: background-color 0.3s, color 0.3s;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas:
+    "header header header header"
+    "stat1 stat2 stat3 stat4"
+    "wasted-foods loss-reasons loss-reasons photo-stream"
+    "ai-recommendations ai-recommendations actions-taken actions-taken"
+    "footer footer footer footer";
+  gap: 20px;
+  padding: 20px;
+}
+
+.dashboard-card {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.header { grid-area: header; }
+.stat1 { grid-area: stat1; }
+.stat2 { grid-area: stat2; }
+.stat3 { grid-area: stat3; }
+.stat4 { grid-area: stat4; }
+.wasted-foods { grid-area: wasted-foods; }
+.loss-reasons { grid-area: loss-reasons; }
+.photo-stream { grid-area: photo-stream; }
+.ai-recommendations { grid-area: ai-recommendations; }
+.actions-taken { grid-area: actions-taken; }
+.time-selector { grid-area: footer; }
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

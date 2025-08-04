@@ -1,0 +1,27 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci --prefix react/mana_dashboard
+    build:
+      commands:
+        - npm run build --prefix react/mana_dashboard
+  artifacts:
+    baseDirectory: react/mana_dashboard/build
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - react/mana_dashboard/node_modules/**/*
+  customHeaders:
+    - pattern: '**/*.mp4'
+      headers:
+        - key: 'Access-Control-Allow-Origin'
+          value: '*'
+        - key: 'Access-Control-Allow-Headers'
+          value: '*'
+        - key: 'Access-Control-Allow-Methods'
+          value: 'GET, HEAD, OPTIONS'
+        - key: 'Accept-Ranges'
+          value: 'bytes'

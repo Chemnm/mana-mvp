@@ -1,0 +1,51 @@
+{
+  "tomato": {
+    "first_seen": 4.48,
+    "first_seen_formatted": "00:04",
+    "total_detections": 280,
+    "confidence_avg": 0.86,
+    "corrected_detections": 280
+  },
+  "ground_beef": {
+    "first_seen": 14.72,
+    "first_seen_formatted": "00:14",
+    "total_detections": 221,
+    "confidence_avg": 0.91,
+    "corrected_detections": 0
+  },
+  "olive_oil": {
+    "first_seen": 15.84,
+    "first_seen_formatted": "00:15",
+    "total_detections": 162,
+    "confidence_avg": 0.95,
+    "corrected_detections": 0
+  },
+  "carton": {
+    "first_seen": 19.88,
+    "first_seen_formatted": "00:19",
+    "total_detections": 3,
+    "confidence_avg": 0.87,
+    "corrected_detections": 0
+  },
+  "carrot": {
+    "first_seen": 19.92,
+    "first_seen_formatted": "00:19",
+    "total_detections": 65,
+    "confidence_avg": 0.99,
+    "corrected_detections": 0
+  },
+  "packaged_cheese": {
+    "first_seen": 32.24,
+    "first_seen_formatted": "00:32",
+    "total_detections": 310,
+    "confidence_avg": 0.88,
+    "corrected_detections": 0
+  },
+  "Meat": {
+    "first_seen": 50.2,
+    "first_seen_formatted": "00:50",
+    "total_detections": 83,
+    "confidence_avg": 0.82,
+    "corrected_detections": 0
+  }
+}
