@@ -117,12 +117,15 @@ const ChatPage = () => {
     const textToSend = typeof promptText === 'string' ? promptText : input;
     if (textToSend.trim() && user && user.id) {
       let currentSession = activeSession;
-      const isNewChat = !currentSession;
+      let isNewChat = false;
 
-      if (isNewChat) {
+      if (!currentSession) {
         currentSession = await createChatSession(user.id);
         setActiveSession(currentSession);
         setSessions([currentSession, ...sessions]);
+        isNewChat = true;
+      } else if (currentSession.summary === 'New Chat' && messages.length === 0) {
+        isNewChat = true;
       }
 
       const userMessage = { userId: user.id, sessionId: currentSession._id, text: textToSend, sender: 'user' };

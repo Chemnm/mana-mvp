@@ -7,6 +7,10 @@ on:
     paths:
       - 'backend/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -44,21 +48,29 @@ jobs:
           MAX_RETRIES=3
           RETRY_DELAY=15
 
-          # Check initial status
-          STATUS=$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --query 'Service.Status' --output text)
-          echo "Initial App Runner service status: $STATUS"
+          # Check initial status and wait if an operation is in progress
+          while true; do
+            STATUS=$(aws apprunner describe-service --service-arn "$SERVICE_ARN" --query 'Service.Status' --output text)
+            echo "Current App Runner service status: $STATUS"
 
-          # Resume if paused
-          if [ "$STATUS" = "PAUSED" ]; then
-            echo "Service is PAUSED. Resuming service..."
-            aws apprunner resume-service --service-arn "$SERVICE_ARN"
-            aws apprunner wait service-resumed --service-arn "$SERVICE_ARN"
-            echo "Service resumed."
-          elif [ "$STATUS" != "RUNNING" ]; then
-            echo "Service is not in a valid state for deployment (must be RUNNING or PAUSED). Current status is $STATUS."
-            echo "Please check the AWS App Runner console for more details."
-            exit 1
-          fi
+            if [ "$STATUS" = "OPERATION_IN_PROGRESS" ]; then
+              echo "An operation is already in progress. Waiting for it to complete..."
+              aws apprunner wait service-updated --service-arn "$SERVICE_ARN"
+              echo "Service operation finished. Re-checking status..."
+            elif [ "$STATUS" = "PAUSED" ]; then
+              echo "Service is PAUSED. Resuming service..."
+              aws apprunner resume-service --service-arn "$SERVICE_ARN"
+              aws apprunner wait service-resumed --service-arn "$SERVICE_ARN"
+              echo "Service resumed. Proceeding to deployment."
+              break
+            elif [ "$STATUS" = "RUNNING" ]; then
+              echo "Service is RUNNING. Proceeding to deployment."
+              break
+            else
+              echo "Service is in an unhandled state: $STATUS. Halting."
+              exit 1
+            fi
+          done
 
           # Attempt deployment with retries
           for i in $(seq 1 $MAX_RETRIES); do
