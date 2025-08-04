@@ -1,5 +1,5 @@
 {
-  "name": "mana-ai-lambda",
+  "name": "mana_ai_lambda",
   "version": "1.0.0",
   "description": "Lambda function for Mana AI",
   "main": "index.mjs",

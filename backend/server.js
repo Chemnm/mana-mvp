@@ -1,4 +1,4 @@
-// v1.1
+// v1.2
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');

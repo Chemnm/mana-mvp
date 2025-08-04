@@ -14,13 +14,13 @@ This directory contains the core backend server for the Mana application.
 -   **Purpose:** It serves as the primary API for the frontend application, handling data requests, user authentication, and business logic. It connects to a MongoDB database to store and retrieve data.
 -   **CI/CD:** The backend is configured for continuous deployment. Any push to the `main` branch that includes changes within the `/backend` directory will automatically trigger a GitHub Actions workflow. This workflow builds a Docker container, pushes it to Amazon ECR, and deploys the new version to **AWS App Runner**.
 
-### 2. `/mana-ai-lambda`
+### 2. `/mana_ai_lambda`
 
 This directory contains the serverless function that powers Navi, the AI assistant.
 
 -   **Technology:** This is a Node.js function designed to be deployed as an **AWS Lambda** function.
 -   **Purpose:** It handles all AI-related tasks, including processing user messages and generating intelligent responses. It integrates with the Gemini API and connects to the MongoDB database to fetch relevant data for providing context-aware answers.
--   **CI/CD:** The Lambda function is also set up for continuous deployment. Any push to the `main` branch with changes in the `/mana-ai-lambda` directory will trigger a GitHub Actions workflow. This workflow installs dependencies, packages the code into a zip file, and deploys it to AWS Lambda.
+-   **CI/CD:** The Lambda function is also set up for continuous deployment. Any push to the `main` branch with changes in the `/mana_ai_lambda` directory will trigger a GitHub Actions workflow. This workflow installs dependencies, packages the code into a zip file, and deploys it to AWS Lambda.
 
 ### 3. `/react/mana_dashboard`
 

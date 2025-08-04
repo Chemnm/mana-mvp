@@ -63,22 +63,27 @@ jobs:
           # Attempt deployment with retries
           for i in $(seq 1 $MAX_RETRIES); do
             echo "Attempt $i of $MAX_RETRIES: Starting deployment..."
-            # Capture stderr to a variable
-            DEPLOY_ERROR=$(aws apprunner start-deployment --service-arn "$SERVICE_ARN" 2>&1 >/dev/null)
-
-            if [ $? -eq 0 ]; then
+            # By placing the command in an if condition, we prevent bash from exiting due to 'set -e'
+            # and can handle the error gracefully.
+            if DEPLOY_OUTPUT=$(aws apprunner start-deployment --service-arn "$SERVICE_ARN" 2>&1); then
               echo "Deployment started successfully."
+              echo "$DEPLOY_OUTPUT"
               exit 0
             else
-              echo "Deployment failed on attempt $i."
+              # The command failed, capture the exit code and error output
+              EXIT_CODE=$?
+              DEPLOY_ERROR=$DEPLOY_OUTPUT
+              echo "Deployment failed on attempt $i with exit code $EXIT_CODE."
               echo "Error details: $DEPLOY_ERROR"
+
+              # Check for the specific transient error to decide whether to retry
               if [[ "$DEPLOY_ERROR" == *"InvalidRequestException"* && "$DEPLOY_ERROR" == *"isn't in RUNNING state"* ]]; then
                 if [ $i -lt $MAX_RETRIES ]; then
                   echo "Retrying in $RETRY_DELAY seconds..."
                   sleep $RETRY_DELAY
                 fi
               else
-                echo "An unexpected error occurred. Halting."
+                echo "An unexpected, non-retriable error occurred. Halting."
                 exit 1
               fi
             fi

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'mana-ai-lambda/**'
+      - 'mana_ai_lambda/**'
 
 jobs:
   deploy:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Install dependencies and create zip file
         run: |
-          cd mana-ai-lambda
+          cd mana_ai_lambda
           npm install
           zip -r ../lambda-deployment-package.zip .
 
